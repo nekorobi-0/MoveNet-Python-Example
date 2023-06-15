@@ -9,12 +9,12 @@ import cv2 as cv
 import numpy as np
 import tensorflow as tf
 import tensorflow_hub as tfhub
+cam_count = 2
 
-
-def get_args():
+def get_args(cam_id):
     parser = argparse.ArgumentParser()
 
-    parser.add_argument("--device", type=int, default=0)
+    parser.add_argument("--device", type=int, default=cam_id)
     parser.add_argument("--file", type=str, default=None)
     parser.add_argument("--width", help='cap width', type=int, default=960)
     parser.add_argument("--height", help='cap height', type=int, default=540)
@@ -78,23 +78,25 @@ def run_inference(model, input_size, image):
 
 
 def main():
-    # 引数解析 #################################################################
-    args = get_args()
-    cap_device = args.device
-    cap_width = args.width
-    cap_height = args.height
+    cap = []
+    for i in range(cam_count):
+        # 引数解析 #################################################################
+        args = get_args(i)
+        cap_device = args.device
+        cap_width = args.width
+        cap_height = args.height
 
-    if args.file is not None:
-        cap_device = args.file
+        if args.file is not None:
+            cap_device = args.file
 
-    mirror = args.mirror
-    keypoint_score_th = args.keypoint_score
-    bbox_score_th = args.bbox_score
+        mirror = args.mirror
+        keypoint_score_th = args.keypoint_score
+        bbox_score_th = args.bbox_score
 
-    # カメラ準備 ###############################################################
-    cap = cv.VideoCapture(cap_device)
-    cap.set(cv.CAP_PROP_FRAME_WIDTH, cap_width)
-    cap.set(cv.CAP_PROP_FRAME_HEIGHT, cap_height)
+        # カメラ準備 ###############################################################
+        cap.append(cv.VideoCapture(cap_device))
+        cap[i].set(cv.CAP_PROP_FRAME_WIDTH, cap_width)
+        cap[i].set(cv.CAP_PROP_FRAME_HEIGHT, cap_height)
 
     # モデルロード #############################################################
     model_url = "https://tfhub.dev/google/movenet/multipose/lightning/1"
@@ -103,48 +105,52 @@ def main():
     module = tfhub.load(model_url)
     model = module.signatures['serving_default']
     fps_fixed = 0
+    break_flag = False
+    fps_now = 0
+    elapsed_time = 0
     while True:
         start_time = time.time()
+        for i in range(cam_count):
+            # カメラキャプチャ #####################################################
+            ret, frame = cap[i].read()
+            if not ret:
+                break
+            if mirror:
+                frame = cv.flip(frame, 1)  # ミラー表示
+            debug_image = copy.deepcopy(frame)
 
-        # カメラキャプチャ #####################################################
-        ret, frame = cap.read()
-        if not ret:
-            break
-        if mirror:
-            frame = cv.flip(frame, 1)  # ミラー表示
-        debug_image = copy.deepcopy(frame)
+            # 検出実施 ##############################################################
+            keypoints_list, scores_list, bbox_list = run_inference(
+                model,
+                input_size,
+                frame,
+            )
+            # デバッグ描画
+            debug_image = draw_debug(
+                debug_image,
+                elapsed_time,
+                keypoint_score_th,
+                keypoints_list,
+                scores_list,
+                bbox_score_th,
+                bbox_list,
+                fps_fixed,
+            )
 
-        # 検出実施 ##############################################################
-        keypoints_list, scores_list, bbox_list = run_inference(
-            model,
-            input_size,
-            frame,
-        )
+            # キー処理(ESC：終了) ##################################################
+            key = cv.waitKey(1)
+            if key == 27:  # ESC
+                break_flag = True
+                break
 
+            # 画面反映 #############################################################
+            cv.imshow(f'MoveNet(multipose) Demo({i})', debug_image)
         elapsed_time = time.time() - start_time
         fps_now = 1/elapsed_time
         fps_fixed = fps_fixed*0.8 + fps_now * 0.2#ローパスフィルター 
-        # デバッグ描画
-        debug_image = draw_debug(
-            debug_image,
-            elapsed_time,
-            keypoint_score_th,
-            keypoints_list,
-            scores_list,
-            bbox_score_th,
-            bbox_list,
-            fps_fixed,
-        )
-
-        # キー処理(ESC：終了) ##################################################
-        key = cv.waitKey(1)
-        if key == 27:  # ESC
+        if break_flag:
             break
-
-        # 画面反映 #############################################################
-        cv.imshow('MoveNet(multipose) Demo', debug_image)
-
-    cap.release()
+    cap[i].release()
     cv.destroyAllWindows()
 
 
