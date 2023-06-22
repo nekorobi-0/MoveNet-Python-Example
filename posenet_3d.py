@@ -10,7 +10,7 @@ import numpy as np
 import tensorflow as tf
 import tensorflow_hub as tfhub
 cam_list = [0,1]
-
+cam_settings = [[94.5,53],[32,24]]#[wide,hight](dagree)
 def get_args(cam_id):
     parser = argparse.ArgumentParser()
 
