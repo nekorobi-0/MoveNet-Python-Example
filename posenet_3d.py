@@ -9,7 +9,7 @@ import cv2 as cv
 import numpy as np
 import tensorflow as tf
 import tensorflow_hub as tfhub
-cam_count = 2
+cam_list = [0,1]
 
 def get_args(cam_id):
     parser = argparse.ArgumentParser()
@@ -79,7 +79,7 @@ def run_inference(model, input_size, image):
 
 def main():
     cap = []
-    for i in range(cam_count):
+    for i in cam_list:
         # 引数解析 #################################################################
         args = get_args(i)
         cap_device = args.device
@@ -110,7 +110,7 @@ def main():
     elapsed_time = 0
     while True:
         start_time = time.time()
-        for i in range(cam_count):
+        for i in cam_list:
             # カメラキャプチャ #####################################################
             ret, frame = cap[i].read()
             if not ret:
