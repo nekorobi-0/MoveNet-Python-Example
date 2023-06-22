@@ -9,6 +9,7 @@ import cv2 as cv
 import numpy as np
 import tensorflow as tf
 import tensorflow_hub as tfhub
+import line_to_point as l2p
 cam_list = [0,1]
 cam_settings = [[94.5,53],[32,24]]#[wide,hight](dagree)
 def get_args(cam_id):
@@ -136,7 +137,11 @@ def main():
                 bbox_list,
                 fps_fixed,
             )
-
+            l2p.data_prossessing(
+                keypoint_score_th,
+                keypoints_list,
+                scores_list
+            )
             # キー処理(ESC：終了) ##################################################
             key = cv.waitKey(1)
             if key == 27:  # ESC

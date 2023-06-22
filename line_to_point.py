@@ -1,6 +1,6 @@
 import numpy as np
 import sympy
-def line_to_point():
+def point_calc():
     #直線１を表す点とベクトル
     p = np.array([-1, 1, 1])
     v = np.array([1, 0, -1])
@@ -49,5 +49,7 @@ def line_to_point():
          +( (q[2]+t*w[2]) - (p[2]+s*v[2]) )**2
     PQ = PQ2**0.5
     print('min distance = {}'.format(PQ))
+def data_prossessing(keypoint_score_th,keypoints_list,scores_list):
+    pass
 if __name__ == "__main__":
     line_to_point()
