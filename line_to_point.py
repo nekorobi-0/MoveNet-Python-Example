@@ -52,4 +52,4 @@ def point_calc():
 def data_prossessing(keypoint_score_th,keypoints_list,scores_list):
     pass
 if __name__ == "__main__":
-    line_to_point()
+    point_calc()
