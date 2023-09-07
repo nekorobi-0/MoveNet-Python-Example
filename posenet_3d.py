@@ -10,8 +10,10 @@ import numpy as np
 import tensorflow as tf
 import tensorflow_hub as tfhub
 import line_to_point as l2p
+import data_processing as dp
 cam_list = [0,1]
 cam_settings = [[94.5,53],[32,24]]#[wide,hight](dagree)
+cam_info = [[1920,1080],[1280,720]]
 def get_args(cam_id):
     parser = argparse.ArgumentParser()
 
@@ -109,6 +111,8 @@ def main():
     break_flag = False
     fps_now = 0
     elapsed_time = 0
+    keypoints_list_list = []
+    scores_list_list = []
     while True:
         start_time = time.time()
         for i in cam_list:
@@ -126,6 +130,8 @@ def main():
                 input_size,
                 frame,
             )
+            keypoints_list_list.append(keypoints_list)
+            scores_list_list.append(scores_list)
             # デバッグ描画
             debug_image = draw_debug(
                 debug_image,
@@ -150,6 +156,7 @@ def main():
 
             # 画面反映 #############################################################
             cv.imshow(f'MoveNet(multipose) Demo({i})', debug_image)
+        dp.data_processing(keypoints_list_list,scores_list_list,cam_settings,cam_info)
         elapsed_time = time.time() - start_time
         fps_now = 1/elapsed_time
         fps_fixed = fps_fixed*0.8 + fps_now * 0.2#ローパスフィルター 
