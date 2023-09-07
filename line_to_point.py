@@ -1,13 +1,17 @@
 import numpy as np
 import sympy
-def point_calc():
+def point_calc(p,v,q,w):
     #直線１を表す点とベクトル
-    p = np.array([-1, 1, 1])
-    v = np.array([1, 0, -1])
+    """
+    p = np.array([-1, 1, 1])位置ベクトル
+    v = np.array([1, 0, -1])方向ベクトル
+    """
 
     #直線２を表す点とベクトル
-    q = np.array([0, 3, 2])
-    w = np.array([1, 2, -1])
+    """
+    q = np.array([0, 3, 2])位置ベクトル
+    w = np.array([1, 2, -1])方向ベクトル
+    """
 
     #変数s, tを用意
     s = sympy.Symbol('s')
