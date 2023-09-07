@@ -41,12 +41,12 @@ def point_calc(p,v,q,w):
     """"
     最接近時のs, tが求められた
     """
-    x, y, z = p[0]+s*v[0], p[1]+s*v[1], p[2]+s*v[2]
-    print('On line 1 : (x, y, z) = ({}, {}, {})'.format(x, y, z))
+    x0, y0, z0 = p[0]+s*v[0], p[1]+s*v[1], p[2]+s*v[2]
     #それは直線２上のどこなのか
-    x, y, z = q[0]+t*w[0], q[1]+t*w[1], q[2]+t*w[2]
-    print('On line 2 : (x, y, z) = ({}, {}, {})'.format(x, y, z))
+    x1, y1, z1 = q[0]+t*w[0], q[1]+t*w[1], q[2]+t*w[2]
 
+    x,y,z = (x0+x1)/2,(y0+y1)/2,(z0+z1)/2
+    return(x,y,z)
     #最接近距離
     PQ2 = ( (q[0]+t*w[0]) - (p[0]+s*v[0]) )**2\
          +( (q[1]+t*w[1]) - (p[1]+s*v[1]) )**2\
