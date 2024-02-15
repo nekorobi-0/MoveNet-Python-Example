@@ -4,16 +4,15 @@
 import copy
 import time
 import argparse
-
 import cv2 as cv
 import numpy as np
 import tensorflow as tf
 import tensorflow_hub as tfhub
-import line_to_point as l2p
-import data_processing as dp
-cam_list = [0,1]
-cam_settings = [[94.5,53],[32,24]]#[wide,hight](dagree)
-cam_info = [[1920,1080],[1280,720]]
+import line_to_point as dp
+from classes import *
+cam1 = cam(h=1920,w=1080,px=0,py=0,pz=0,deg_h=53,deg_w=94.5)
+cam2 = cam(h=1280,w= 720,px=0,py=0,pz=1,deg_h=24,deg_w=32  )
+cam_list = [cam1,cam2]
 def get_args(cam_id):
     parser = argparse.ArgumentParser()
 
@@ -143,11 +142,6 @@ def main():
                 bbox_list,
                 fps_fixed,
             )
-            l2p.data_prossessing(
-                keypoint_score_th,
-                keypoints_list,
-                scores_list
-            )
             # キー処理(ESC：終了) ##################################################
             key = cv.waitKey(1)
             if key == 27:  # ESC
@@ -156,7 +150,7 @@ def main():
 
             # 画面反映 #############################################################
             cv.imshow(f'MoveNet(multipose) Demo({i})', debug_image)
-        dp.data_processing(keypoints_list_list,scores_list_list,cam_settings,cam_info)
+        dp.data_prossessing(keypoints_list_list,scores_list_list,cam_list)
         elapsed_time = time.time() - start_time
         fps_now = 1/elapsed_time
         fps_fixed = fps_fixed*0.8 + fps_now * 0.2#ローパスフィルター 
@@ -164,7 +158,6 @@ def main():
             break
     cap[i].release()
     cv.destroyAllWindows()
-
 
 def draw_debug(
     image,

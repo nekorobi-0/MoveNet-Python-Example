@@ -1,21 +1,20 @@
 import numpy as np
 import sympy
+import math
+#座標系の定義
+#z-upな左手系な座標系とする
 def point_calc(p,v,q,w):
-    #直線１を表す点とベクトル
-    """
-    p = np.array([-1, 1, 1])位置ベクトル
-    v = np.array([1, 0, -1])方向ベクトル
-    """
+    """#直線１を表す点とベクトル
+    p = np.array([-1, 1, 1])#位置ベクトル
+    v = np.array([1, 0, -1])#方向のベクトル
 
     #直線２を表す点とベクトル
-    """
-    q = np.array([0, 3, 2])位置ベクトル
-    w = np.array([1, 2, -1])方向ベクトル
-    """
+    q = np.array([0, 3, 2])#位置ベクトル
+    w = np.array([1, 2, -1])#方向のベクトル
 
     #変数s, tを用意
     s = sympy.Symbol('s')
-    t = sympy.Symbol('t') #ここからs, tは通常の変数ではなく記号として扱う
+    t = sympy.Symbol('t') #ここからs, tは通常の変数ではなく記号として扱う"""
 
     """
     直線１を成す点Pの座標は次の通り
@@ -41,19 +40,51 @@ def point_calc(p,v,q,w):
     """"
     最接近時のs, tが求められた
     """
-    x0, y0, z0 = p[0]+s*v[0], p[1]+s*v[1], p[2]+s*v[2]
+    #直線1上のどこか
+    x1, y1, z1 = p[0]+s*v[0], p[1]+s*v[1], p[2]+s*v[2]
     #それは直線２上のどこなのか
-    x1, y1, z1 = q[0]+t*w[0], q[1]+t*w[1], q[2]+t*w[2]
-
-    x,y,z = (x0+x1)/2,(y0+y1)/2,(z0+z1)/2
-    return(x,y,z)
+    x2, y2, z2 = q[0]+t*w[0], q[1]+t*w[1], q[2]+t*w[2]
+    return (x1+x2)/2,(y1+y2)/2,(z1+z2)/2
     #最接近距離
     PQ2 = ( (q[0]+t*w[0]) - (p[0]+s*v[0]) )**2\
          +( (q[1]+t*w[1]) - (p[1]+s*v[1]) )**2\
          +( (q[2]+t*w[2]) - (p[2]+s*v[2]) )**2
     PQ = PQ2**0.5
     print('min distance = {}'.format(PQ))
-def data_prossessing(keypoint_score_th,keypoints_list,scores_list):
-    pass
+
+
+
+        cam_infos = [cam_info for i in len(keypoints_list)]
+        k = [kp(k,sc,cam) for k,sc,cam in zip(keypoints_list,scores_list,cam_infos)]
+        for p in k:
+            p
+             
+             
+             
+class kp:#キーポイントとカメラ情報を引数にして位置ベクトルと方向ベクトルを導出するクラス
+        def __init__(self,keypoint,score,cam) -> None:
+            kp =  keypoint
+            sc = score
+            ca = cam
+            pvec = self.ca.pvec
+        def avg(self,other):#もう一方の点との結果を統合して新しくクラスに取り込む
+            pass
+        def calc(self):
+            #ここからキーポイントの座標をカメラの情報と合わせることでカメラ原点のローカル座標系に変換する
+            for i in range(2):
+                math.cos()
+            ldvec = [
+                
+            ]#x,y,z-横がxで縦がy
+            gdvec :np.ndarray = np.array([
+                False,
+                False,
+                False
+            ])*self.ca.rvec#方向ベクトルをカメラの回転行列との積を取ってカメラのローカル座標系を回転を補正したグローバルな方向ベクトルに変換する
+
+
+
+
+
 if __name__ == "__main__":
     point_calc()
