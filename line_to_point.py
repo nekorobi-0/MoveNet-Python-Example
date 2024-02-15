@@ -54,6 +54,8 @@ def point_calc(p,v,q,w):
 
 
 
+def data_prossessing(keypoints_list_list,scores_list_list,cam_info):
+    for keypoints_list,scores_list in zip(keypoints_list_list,scores_list_list):
         cam_infos = [cam_info for i in len(keypoints_list)]
         k = [kp(k,sc,cam) for k,sc,cam in zip(keypoints_list,scores_list,cam_infos)]
         for p in k:
