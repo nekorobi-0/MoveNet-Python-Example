@@ -45,12 +45,12 @@ def point_calc(p:np.ndarray,v:np.ndarray,q:np.ndarray,w:np.ndarray):
     x1, y1, z1 = p[0]+s*v[0], p[1]+s*v[1], p[2]+s*v[2]
     #それは直線２上のどこなのか
     x2, y2, z2 = q[0]+t*w[0], q[1]+t*w[1], q[2]+t*w[2]
-    return (x1+x2)/2,(y1+y2)/2,(z1+z2)/2
     #最接近距離
     PQ2 = ( (q[0]+t*w[0]) - (p[0]+s*v[0]) )**2\
          +( (q[1]+t*w[1]) - (p[1]+s*v[1]) )**2\
          +( (q[2]+t*w[2]) - (p[2]+s*v[2]) )**2
     PQ = PQ2**0.5
+    return (x1+x2)/2,(y1+y2)/2,(z1+z2)/2,PQ
     print('min distance = {}'.format(PQ))
 
 
@@ -68,21 +68,14 @@ class twoDpos:
         self.x = x
         self.y = y
 class kp:#キーポイントとカメラ情報を引数にして位置ベクトルと方向ベクトルを導出するクラス(単体)
-    def __init__(self,keypoint,score,cam) -> None:
+    def __init__(self,keypoint:twoDpos,score,cam:classes.cam) -> None:
         self.kp:twoDpos =  keypoint
         self.sc = score
         self.ca:classes.cam = cam
         self.pvec = self.ca.pvec
-    def avg(self,other):#もう一方の点との結果を統合して新しくクラスに取り込む
-        pass
     def calc(self):
         #ここからキーポイントの座標をカメラの情報と合わせることでカメラ原点のローカル座標系に変換する
-        for i in range(2):
-            math.cos()
-        gdvec :np.ndarray = [
-            
-        ]#x,y,z-横がxで縦がy
-        self.gdvec :np.ndarray = np.array(self.ldvec)*self.ca.rvec
+        self.gdvec :np.ndarray = self.ldvec*self.ca.rvec
         #方向ベクトルをカメラの回転行列との積を取ってカメラのローカル座標系を回転を補正したグローバルな方向ベクトルに変換する
     def calcdeg(self):#角度を導出してそこから方向ベクトルを導出する
         self.w_deg:float = math.atan2(self.kp.x/self.ca.w_tanth)
@@ -92,7 +85,13 @@ class kp:#キーポイントとカメラ情報を引数にして位置ベクト�
             math.tan(self.w_deg),
             math.tan(self.h_deg),
             1])
-
+class twokp():
+    def __init__(self,kp1:kp,kp2:kp) -> None:
+        self.kp1:kp = kp1
+        self.kp2:kp = kp2
+    def calc(self):
+        x,y,z,d= point_calc(self.kp1.ca.parr,self.kp1.gdvec,
+                   self.kp2.ca.parr,self.kp2.gdvec)
 
 
 if __name__ == "__main__":
