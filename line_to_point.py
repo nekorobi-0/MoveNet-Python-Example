@@ -90,8 +90,13 @@ class twokp():
         self.kp1:kp = kp1
         self.kp2:kp = kp2
     def calc(self):
-        x,y,z,d= point_calc(self.kp1.ca.parr,self.kp1.gdvec,
-                   self.kp2.ca.parr,self.kp2.gdvec)
+        self.x,self.y,self.z,self.d= point_calc(
+            self.kp1.ca.parr,self.kp1.gdvec,
+            self.kp2.ca.parr,self.kp2.gdvec)
+class body():
+    def __init__(self) -> None:
+        pass
+
 
 
 if __name__ == "__main__":
