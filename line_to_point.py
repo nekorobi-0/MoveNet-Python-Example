@@ -2,6 +2,7 @@ import numpy as np
 import sympy
 import math
 import classes
+import itertools
 #座標系の定義
 #z-upな左手系な座標系とする
 def point_calc(p:np.ndarray,v:np.ndarray,q:np.ndarray,w:np.ndarray):
@@ -56,12 +57,17 @@ def point_calc(p:np.ndarray,v:np.ndarray,q:np.ndarray,w:np.ndarray):
 
 
 def data_prossessing(keypoints_list_list,scores_list_list,cam_info):
+    kps = []
     for keypoints_list,scores_list in zip(keypoints_list_list,scores_list_list):
         cam_infos = [cam_info for i in len(keypoints_list)]
-        k = [kp(k,sc,cam) for k,sc,cam in zip(keypoints_list,scores_list,cam_infos)]
-        for p in k:
-            p
-             
+        k = [kp(k,sc,cam) for k,sc,cam in zip(keypoints_list,scores_list,cam_infos)]#kpインスタンスを作成
+        kps.append(k)
+    for k1,k2 in itertools.combinations(kps,2):
+        for 
+        kp2 = twokp(k1,k2)
+        kp2.calc()
+        kp2.calcdeg()
+            
              
 class twoDpos:
     def __init__(self,x,y) -> None:
@@ -94,8 +100,11 @@ class twokp():
             self.kp1.ca.parr,self.kp1.gdvec,
             self.kp2.ca.parr,self.kp2.gdvec)
 class body():
-    def __init__(self) -> None:
-        pass
+    def __init__(self,kp) -> None:
+        self.kps = kp
+
+
+        
 
 
 
