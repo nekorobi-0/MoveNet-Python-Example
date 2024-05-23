@@ -3,6 +3,7 @@ import sympy
 import math
 import classes
 import itertools
+
 #座標系の定義
 #z-upな左手系な座標系とする
 def point_calc(p:np.ndarray,v:np.ndarray,q:np.ndarray,w:np.ndarray):
@@ -54,20 +55,37 @@ def point_calc(p:np.ndarray,v:np.ndarray,q:np.ndarray,w:np.ndarray):
     return (x1+x2)/2,(y1+y2)/2,(z1+z2)/2,PQ
     print('min distance = {}'.format(PQ))
 
-
+def combination(n,r):
+    return math.factorial(n) // (math.factorial(n - r) * math.factorial(r))
 
 def data_prossessing(keypoints_list_list,scores_list_list,cam_info):
-    kps = []
-    for keypoints_list,scores_list in zip(keypoints_list_list,scores_list_list):
-        cam_infos = [cam_info for i in len(keypoints_list)]
-        k = [kp(k,sc,cam) for k,sc,cam in zip(keypoints_list,scores_list,cam_infos)]#kpインスタンスを作成
-        kps.append(k)
+    kps = []#キーポイントのリストのリスト
+    #---------------
+    #camごとのリスト
+    #\人間ごとのリスト
+    # \パーツごとのリスト
+    #---------------
+    lengh_list = list(map(len,keypoints_list_list))
+    list_min,list_max = min(lengh_list),max(lengh_list)
+    for keypoints_list,scores_list in zip(keypoints_list_list,scores_list_list): #人間ごとに分割
+        cam_infos = [cam_info for i in len(keypoints_list)]#カメラ情報を人間の数だけ増やす
+        k = [kp(k,sc,cam) for k,sc,cam in zip(keypoints_list,scores_list,cam_infos)]#kpインスタンスを作成(人間)inリスト
+        kps.append(k)#カメラごとのリスト
+    kpslist:list[twokp] = []
     for k1,k2 in itertools.combinations(kps,2):
-        for 
-        kp2 = twokp(k1,k2)
-        kp2.calc()
-        kp2.calcdeg()
-            
+        for body1, body2 in itertools.product(k1,k2):
+            kp2 = twokp(body1,body2)
+            kpslist.append(kp2)
+    kpslist.sort(key=lambda x: x.d)
+    minbody = min(map(lambda x: len(x),keypoints_list_list))
+    minkp = minbody * combination(len(keypoints_list_list),2) 
+    for kp2 in kpslist:
+        mindist = 3000
+        if kp2.d < mindist:
+            kp2
+        else:
+            pass
+        #ここで距離の小さな目標たちを見つける&結合して1つのデータにする
              
 class twoDpos:
     def __init__(self,x,y) -> None:
@@ -95,6 +113,7 @@ class twokp():
     def __init__(self,kp1:kp,kp2:kp) -> None:
         self.kp1:kp = kp1
         self.kp2:kp = kp2
+        self.calc()
     def calc(self):
         self.x,self.y,self.z,self.d= point_calc(
             self.kp1.ca.parr,self.kp1.gdvec,

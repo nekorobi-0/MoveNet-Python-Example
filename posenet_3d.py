@@ -10,6 +10,7 @@ import tensorflow as tf
 import tensorflow_hub as tfhub
 import line_to_point as dp
 from classes import *
+#距離はmm
 cam1 = cam(h=1920,w=1080,px=0,py=0,pz=0,deg_h=53,deg_w=94.5)
 cam2 = cam(h=1280,w= 720,px=0,py=0,pz=1,deg_h=24,deg_w=32  )
 cam_list = [cam1,cam2]
@@ -60,7 +61,7 @@ def run_inference(model, input_size, image):
                              keypoints_with_score[(index * 3) + 0])
             score = keypoints_with_score[(index * 3) + 2]
 
-            keypoints.append([keypoint_x, keypoint_y])
+            keypoints.append((keypoint_x, keypoint_y))
             scores.append(score)
 
         # バウンディングボックス

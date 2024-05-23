@@ -10,8 +10,8 @@ class cam:
         self.deg_w:float = deg_h
         self.h_tanth:float = self.height/math.tan(deg_h)
         self.w_tanth:float = self.width /math.tan(deg_w)
-        self.rvec:np.ndarray = rvec
-        self.parr:np.ndarray = parr
+        self.rmatrix:np.ndarray = rvec
+        self.pvec:np.ndarray = parr
 class pos:
     def __init__(self,x:float,y:float,z:float):
         self.x:float = x
