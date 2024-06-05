@@ -8,7 +8,7 @@ import cv2 as cv
 import numpy as np
 import tensorflow as tf
 import tensorflow_hub as tfhub
-import line_to_point as dp
+import newprocessing as dp
 from classes import *
 #距離はmm
 cam1 = cam(h=1920,w=1080,px=0,py=0,pz=0,deg_h=53,deg_w=94.5)
