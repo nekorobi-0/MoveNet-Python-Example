@@ -6,12 +6,12 @@ ax = fig.add_subplot(111, projection='3d')
 ax.set_xlabel("x")
 ax.set_ylabel("y")
 ax.set_zlabel("z")
-def draw(x,z,y):
+def draw(x,y,z):
     ax.clear()
     ax.set_xlabel("x")
     ax.set_ylabel("z")
     ax.set_zlabel("y")
-    ax.scatter(x,y,z)
+    ax.scatter(x,z,y)
     plt.pause(0.001)
 if __name__ == "__main__":
     import random

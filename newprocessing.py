@@ -33,7 +33,7 @@ def point_line_closest_point(a1:np.ndarray, b1:np.ndarray, a2:np.ndarray, b2:np.
         raise ValueError("The direction vectors are parallel or anti-parallel.")
     
     # 連立方程式の係数行列と右辺ベクトルを設定
-    A = np.array([
+    a = np.array([
         [np.dot(b1, b1), -np.dot(b1, b2)],
         [-np.dot(b1, b2), np.dot(b2, b2)]
     ])
@@ -43,7 +43,7 @@ def point_line_closest_point(a1:np.ndarray, b1:np.ndarray, a2:np.ndarray, b2:np.
     ])
     
     # 連立方程式を解いて t と s を求める
-    t, s = np.linalg.solve(A, b)
+    t, s = np.linalg.solve(a, b)
     
     # 最近接点を計算
     closest_point_on_line1 = a1 + t * b1
