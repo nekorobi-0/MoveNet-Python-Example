@@ -10,10 +10,17 @@ import tensorflow as tf
 import tensorflow_hub as tfhub
 import newprocessing as dp
 from classes import *
+from scipy.spatial.transform import Rotation
+import math
+#x-メインカメラ横方向に軸(カメラ正面から見て正の方向は右)
+#y-高さ方向(正の方向は下)
+#z-メインカメラ正面方向に軸(正の方向は前)
 #距離はmm
-cam1 = cam(h=1920,w=1080,px=0,py=0,pz=0,deg_h=53,deg_w=94.5)
-cam2 = cam(h=1280,w= 720,px=0,py=0,pz=1,deg_h=24,deg_w=32  )
-cam_list = [cam1,cam2]
+cam0_rotation = Rotation.from_euler('xyz', [0, 0, 0], degrees=True).as_matrix()
+cam1_rotation = Rotation.from_euler('xyz', [0, math.pi/2, 0], degrees=True).as_matrix()
+cam0 = cam(h=1920,w=1080,px=0,py=0,pz=0,deg_h=53,deg_w=94.5,rvec=cam0_rotation,pvec=np.array([0,0,0]),camid=0)
+cam1 = cam(h=1280,w= 720,px=0,py=0,pz=1,deg_h=24,deg_w=32  ,rvec=cam1_rotation,pvec=np.array([1,0,1]),camid=1)
+cam_list:list[cam] = [cam0,cam1]
 def get_args(cam_id):
     parser = argparse.ArgumentParser()
 
@@ -82,7 +89,8 @@ def run_inference(model, input_size, image):
 
 def main():
     cap = []
-    for i in cam_list:
+    for ca in cam_list:
+        i = ca.camid
         # 引数解析 #################################################################
         args = get_args(i)
         cap_device = args.device
@@ -111,11 +119,12 @@ def main():
     break_flag = False
     fps_now = 0
     elapsed_time = 0
-    keypoints_list_list = []
-    scores_list_list = []
     while True:
+        keypoints_list_list = []
+        scores_list_list = []
         start_time = time.time()
-        for i in cam_list:
+        for ca in cam_list:
+            i = ca.camid
             # カメラキャプチャ #####################################################
             ret, frame = cap[i].read()
             if not ret:
